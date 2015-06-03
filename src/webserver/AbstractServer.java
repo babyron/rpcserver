@@ -1,9 +1,22 @@
 package webserver;
 
+import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.apache.xmlrpc.server.PropertyHandlerMapping;
+import org.apache.xmlrpc.server.XmlRpcServer;
+import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
+import org.apache.xmlrpc.webserver.WebServer;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
+
 /**
  * Created by ron on 2015/6/3.
  */
-public class AbstractServer implements Server{
+abstract public class AbstractServer implements Server{
     protected String serverName = null;
     protected String ip = null;
     protected int port;
@@ -42,12 +55,37 @@ public class AbstractServer implements Server{
     }
 
     @Override
-    public void registerService(String service) {
+    public void registerService() throws IOException, XmlRpcException {
+        Properties properties = new Properties();
+        FileInputStream fileInputStream = new FileInputStream("master.properties");
+        properties.load(fileInputStream);
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        String url = "http://" + ip + ":" + port + "/XML-RPC/service";
+        config.setServerURL(new URL(url));
 
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+
+        Object[] params = new Object[] { serverName, new ServerStatus(ip, port, true)};
+        client.execute("MasterService.RegisterServer", params);
     }
 
     @Override
-    public void serverStart() {
+    public void serverStart(Class cls) throws XmlRpcException, IOException {
+        WebServer webServer = new WebServer(port);
 
+        XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
+
+        PropertyHandlerMapping phm = new PropertyHandlerMapping();
+
+        phm.addHandler(cls.getName(), cls);
+
+        xmlRpcServer.setHandlerMapping(phm);
+
+        XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
+        serverConfig.setEnabledForExtensions(true);
+        serverConfig.setContentLengthOptional(false);
+
+        webServer.start();
     }
 }
