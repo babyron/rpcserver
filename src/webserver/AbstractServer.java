@@ -81,7 +81,7 @@ abstract public class AbstractServer implements Server{
 
         PropertyHandlerMapping phm = new PropertyHandlerMapping();
 
-        phm.addHandler(cls.getName(), cls);
+        phm.addHandler(cls.getSimpleName(), cls);
 
         xmlRpcServer.setHandlerMapping(phm);
 

@@ -1,14 +1,19 @@
 package client;
 
 import java.net.MalformedURLException;  
-import java.net.URL;  
-  
-import org.apache.xmlrpc.XmlRpcException;  
+import java.net.URL;
+
+import cache.LRUCache;
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;  
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import webserver.ServerStatus;
 
-public class ClientTest {  
+public class ClientTest {
+    LRUCache cache = new LRUCache();
+    public final String serverName = "master";
+    public final String serverIp = "127.0.0.1";
+    public final int serverPort = 8080;
 
     private XmlRpcClient getApplicationClient(ServerStatus serverStatus) throws MalformedURLException {
         String url = "http://" + serverStatus.getIp() + ":" + serverStatus.getPort() +  "/XML-RPC/service";
@@ -21,27 +26,28 @@ public class ClientTest {
         return client;
     }
 
+    private XmlRpcClient getApplicationClient(String name) throws MalformedURLException, XmlRpcException {
+        XmlRpcClient client = cache.getServerStatus("master");
+        ServerStatus serverStatus = null;
+        if(client == null) {
+            serverStatus = new ServerStatus(serverIp, serverPort, true);
+            client = getApplicationClient(serverStatus);
+            cache.putServerStatus("master", client);
+        }
+
+        assert client != null;
+
+        serverStatus = (ServerStatus) client.execute("MasterService.findServer", new Object[]{name});
+        System.out.println(serverStatus.getPort());
+        return getApplicationClient(serverStatus);
+    }
+
+
     public static void main(String[] args) {  
-  
-        try {  
-  
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();  
-            config.setServerURL(new URL("http://127.0.0.1:8080/XML-RPC/service"));
-            config.setEnabledForExtensions(true);
-
-            XmlRpcClient client = new XmlRpcClient();
-            client.setConfig(config);
-
-            Object[] params = new Object[] {new String("calculator")};
-            ServerStatus result = (ServerStatus) client.execute("MasterService.findServer", params);
-            System.out.println(result.getIp());
-              
-//            System.out.println(result);
-//
-//            result = (Integer) client.execute("Calculator.subtract", params);
-              
-   //         System.out.println(result);
-  
+        ClientTest clientTest = new ClientTest();
+        try {
+            XmlRpcClient client = clientTest.getApplicationClient("calculator");
+            System.out.println(client.execute("Calculator.add", new Object[]{new Integer(1), new Integer(2)}));
         } catch (XmlRpcException e) {  
             e.printStackTrace();  
         } catch (MalformedURLException e) {  

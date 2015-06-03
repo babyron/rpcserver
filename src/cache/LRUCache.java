@@ -1,5 +1,6 @@
 package cache;
 
+import org.apache.xmlrpc.client.XmlRpcClient;
 import webserver.ServerStatus;
 
 import java.util.HashMap;
@@ -10,13 +11,13 @@ import java.util.Map;
  * Created by ron on 2015/6/3.
  */
 public class LRUCache {
-    Map<String, ServerStatus> cacheMap = new HashMap<String, ServerStatus>();
+    Map<String, XmlRpcClient> cacheMap = new HashMap<String, XmlRpcClient>();
 
-    public ServerStatus getServerStatus(String name){
+    public XmlRpcClient getServerStatus(String name){
         return cacheMap.get(name);
     }
 
-    public void putServerStatus(String name, ServerStatus serverStatus){
-        cacheMap.put(name, serverStatus);
+    public void putServerStatus(String name, XmlRpcClient xmlRpcClient){
+        cacheMap.put(name, xmlRpcClient);
     }
 }
