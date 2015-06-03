@@ -1,11 +1,11 @@
 package webserver;
 
-import java.util.concurrent.TimeUnit;
+import java.io.Serializable;
 
 /**
  * Created by ron on 2015/6/3.
  */
-public class ServerStatus {
+public class ServerStatus implements Serializable{
     private String ip;
     private int port;
     private boolean status;
@@ -15,6 +15,34 @@ public class ServerStatus {
         this.port = port;
         this.status = status;
         this.time = System.currentTimeMillis();
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     private void setStatus(boolean status){

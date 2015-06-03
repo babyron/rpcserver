@@ -57,16 +57,19 @@ abstract public class AbstractServer implements Server{
     @Override
     public void registerService() throws IOException, XmlRpcException {
         Properties properties = new Properties();
-        FileInputStream fileInputStream = new FileInputStream("master.properties");
+        FileInputStream fileInputStream = new FileInputStream("src/master.properties");
         properties.load(fileInputStream);
+        fileInputStream.close();
+        String serverIp = (String) properties.get("ip");
+        int serverPort = Integer.valueOf((String) properties.get("port"));
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        String url = "http://" + ip + ":" + port + "/XML-RPC/service";
+        String url = "http://" + serverIp + ":" + serverPort + "/XML-RPC/service";
         config.setServerURL(new URL(url));
-
+        config.setEnabledForExtensions(true);
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
-
-        Object[] params = new Object[] { serverName, new ServerStatus(ip, port, true)};
+        System.out.println(config.isEnabledForExtensions());
+        Object[] params = new Object[] { serverName, ip, port};
         client.execute("MasterService.RegisterServer", params);
     }
 

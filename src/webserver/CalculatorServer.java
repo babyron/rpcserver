@@ -22,4 +22,8 @@ public class CalculatorServer extends AbstractServer{
         registerService();
         super.serverStart(Calculator.class);
     }
+
+    public static void main(String []args) throws XmlRpcException, IOException {
+        new CalculatorServer().serverStart(Calculator.class);
+    }
 }

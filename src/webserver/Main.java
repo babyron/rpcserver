@@ -9,7 +9,6 @@ import org.apache.xmlrpc.webserver.WebServer;
  * Created by ron on 2015/6/3.
  */
 public class Main {
-
     private static final int port = 8080;
     public static void main(String[] args) throws Exception {
         WebServer webServer = new WebServer(port);

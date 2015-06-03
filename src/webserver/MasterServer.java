@@ -39,6 +39,7 @@ public class MasterServer {
             return 1;
         }else{
             servers.put(name, serverStatus);
+            System.out.println("OK");
             return 0;
         }
     }

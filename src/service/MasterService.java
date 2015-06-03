@@ -8,12 +8,14 @@ import webserver.ServerStatus;
  */
 public class MasterService {
 
-    public int forceRegisterServer(String name, ServerStatus serverStatus){
+    public int forceRegisterServer(String name, String ip, int port){
+        ServerStatus serverStatus = new ServerStatus(ip, port, true);
         MasterServer server = MasterServer.getMaster();
         return server.forceRegisterServer(name, serverStatus);
     }
 
-    public int RegisterServer(String name, ServerStatus serverStatus){
+    public int RegisterServer(String name, String ip, int port){
+        ServerStatus serverStatus = new ServerStatus(ip, port, true);
         MasterServer server = MasterServer.getMaster();
         return server.RegisterServer(name, serverStatus);
     }
