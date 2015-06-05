@@ -8,32 +8,38 @@ import org.apache.xmlrpc.webserver.WebServer;
 import service.TaskService;
 
 public class Server {
-	
+
 	private static final int port = 8080;
-    public static void main(String[] args) throws Exception {
-        WebServer webServer = new WebServer(port);
 
-        XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
+	public static void main(String[] args) throws Exception {
+		WebServer webServer = new WebServer(port);
 
-        PropertyHandlerMapping phm = new PropertyHandlerMapping();
+		XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
-        /* 从配置文件中加载.
-         * The property file might look like:
-         *   Calculator=org.apache.xmlrpc.demo.Calculator
-         *   org.apache.xmlrpc.demo.proxy.Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
-         */
-        //phm.load(Thread.currentThread().getContextClassLoader(), "service.properties");
-        phm.addHandler(TaskService.class.getSimpleName(), TaskService.class);
-        /* 也可以像这样直接指定:
-         * phm.addHandler("Calculator", org.apache.xmlrpc.demo.Calculator.class);
-         * phm.addHandler(org.apache.xmlrpc.demo.proxy.Adder.class.getName(), org.apache.xmlrpc.demo.proxy.AdderImpl.class);
-         */
-        xmlRpcServer.setHandlerMapping(phm);
+		PropertyHandlerMapping phm = new PropertyHandlerMapping();
 
-        XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
-        serverConfig.setEnabledForExtensions(true);
-        serverConfig.setContentLengthOptional(false);
+		/*
+		 * 从配置文件中加载. The property file might look like:
+		 * Calculator=org.apache.xmlrpc.demo.Calculator
+		 * org.apache.xmlrpc.demo.proxy
+		 * .Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
+		 */
+		// phm.load(Thread.currentThread().getContextClassLoader(),
+		// "service.properties");
+		phm.addHandler(TaskService.class.getSimpleName(), TaskService.class);
+		/*
+		 * 也可以像这样直接指定: phm.addHandler("Calculator",
+		 * org.apache.xmlrpc.demo.Calculator.class);
+		 * phm.addHandler(org.apache.xmlrpc.demo.proxy.Adder.class.getName(),
+		 * org.apache.xmlrpc.demo.proxy.AdderImpl.class);
+		 */
+		xmlRpcServer.setHandlerMapping(phm);
 
-        webServer.start();
-    }
+		XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer
+				.getConfig();
+		serverConfig.setEnabledForExtensions(true);
+		serverConfig.setContentLengthOptional(false);
+
+		webServer.start();
+	}
 }
