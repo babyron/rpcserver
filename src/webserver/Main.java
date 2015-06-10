@@ -8,6 +8,7 @@ import service.MasterService;
 
 /**
  * Created by ron on 2015/6/3.
+ * 启动目录服务器
  */
 public class Main {
     private static final int port = 8080;
@@ -32,6 +33,9 @@ public class Main {
         xmlRpcServer.setHandlerMapping(phm);
 
         XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
+        /**
+         * 开启EnabledForExtensions,可以识别Serializable类型
+         */
         serverConfig.setEnabledForExtensions(true);
         serverConfig.setContentLengthOptional(false);
 

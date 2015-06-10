@@ -21,7 +21,51 @@ abstract public class AbstractServer implements Server{
     protected String ip = null;
     protected int port;
     protected boolean status;
+    
+    /**
+     * RPC调用目录服务器的RegisterServer服务，向目录服务器注册本服务器的信息
+     */
+    @Override
+    public void registerService() throws IOException, XmlRpcException {
+        Properties properties = new Properties();
+        FileInputStream fileInputStream = new FileInputStream("src/master.properties");
+        properties.load(fileInputStream);
+        fileInputStream.close();
+        String serverIp = (String) properties.get("ip");
+        int serverPort = Integer.valueOf((String) properties.get("port"));
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        String url = "http://" + serverIp + ":" + serverPort + "/XML-RPC/service";
+        config.setServerURL(new URL(url));
+        config.setEnabledForExtensions(true);
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+        System.out.println(config.isEnabledForExtensions());
+        Object[] params = new Object[] { serverName, ip, port};
+        client.execute("MasterService.registerServer", params);
+    }
 
+    /**
+     * 启动应用服务器
+     */
+    @Override
+    public void serverStart(Class<?> cls) throws XmlRpcException, IOException {
+        WebServer webServer = new WebServer(port);
+
+        XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
+
+        PropertyHandlerMapping phm = new PropertyHandlerMapping();
+
+        phm.addHandler(cls.getSimpleName(), cls);
+
+        xmlRpcServer.setHandlerMapping(phm);
+
+        XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
+        serverConfig.setEnabledForExtensions(true);
+        serverConfig.setContentLengthOptional(false);
+
+        webServer.start();
+    }
+    
     public String getServerName() {
         return serverName;
     }
@@ -52,43 +96,5 @@ abstract public class AbstractServer implements Server{
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    @Override
-    public void registerService() throws IOException, XmlRpcException {
-        Properties properties = new Properties();
-        FileInputStream fileInputStream = new FileInputStream("src/master.properties");
-        properties.load(fileInputStream);
-        fileInputStream.close();
-        String serverIp = (String) properties.get("ip");
-        int serverPort = Integer.valueOf((String) properties.get("port"));
-        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        String url = "http://" + serverIp + ":" + serverPort + "/XML-RPC/service";
-        config.setServerURL(new URL(url));
-        config.setEnabledForExtensions(true);
-        XmlRpcClient client = new XmlRpcClient();
-        client.setConfig(config);
-        System.out.println(config.isEnabledForExtensions());
-        Object[] params = new Object[] { serverName, ip, port};
-        client.execute("MasterService.RegisterServer", params);
-    }
-
-    @Override
-    public void serverStart(Class cls) throws XmlRpcException, IOException {
-        WebServer webServer = new WebServer(port);
-
-        XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
-
-        PropertyHandlerMapping phm = new PropertyHandlerMapping();
-
-        phm.addHandler(cls.getSimpleName(), cls);
-
-        xmlRpcServer.setHandlerMapping(phm);
-
-        XmlRpcServerConfigImpl serverConfig = (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
-        serverConfig.setEnabledForExtensions(true);
-        serverConfig.setContentLengthOptional(false);
-
-        webServer.start();
     }
 }

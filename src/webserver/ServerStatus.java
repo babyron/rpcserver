@@ -3,13 +3,19 @@ package webserver;
 import java.io.Serializable;
 
 /**
- * Created by ron on 2015/6/3.
+ * class implements Serializable can be recognized by xml-rpc framework
+ * class variable ip and port should be focused
+ * 实现Serializable接口的类，可以实现序列化反序列化，目前主要用到该类的ip port属性
  */
 public class ServerStatus implements Serializable{
-    private String ip;
+
+	private static final long serialVersionUID = 1L;
+	
+	private String ip;
     private int port;
-    private boolean status;
-    private long time;
+    private transient boolean status;
+    private transient long time;
+    
     public ServerStatus(String ip, int port, boolean status){
         this.ip = ip;
         this.port = port;
@@ -44,7 +50,7 @@ public class ServerStatus implements Serializable{
     public void setTime(long time) {
         this.time = time;
     }
-
+    
     private void setStatus(boolean status){
         this.status = status;
     }
@@ -53,6 +59,9 @@ public class ServerStatus implements Serializable{
         this.time = System.currentTimeMillis();
     }
 
+    /**
+     * object method override, not used
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,6 +75,9 @@ public class ServerStatus implements Serializable{
         return true;
     }
 
+    /**
+     * object method override, not used
+     */
     @Override
     public int hashCode() {
         int result = ip != null ? ip.hashCode() : 0;

@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="task"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/ws-commons-util-1.0.2.jar"/>
 	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/xmlrpc-client-3.1.3.jar"/>
 	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/xmlrpc-common-3.1.3.jar"/>
 	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/xmlrpc-server-3.1.3.jar"/>
+	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="/media/ron/新加卷2/XML-RPC/lib/ws-commons-util-1.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
